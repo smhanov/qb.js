@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+    <script src="src/console.js"></script>
+    <script src="src/DebugConsole.js"></script>
+    <script src="src/virtualmachine.js"></script>
+    <script src="src/types.js"></script>
+    <script src="src/CodeGenerator.js"></script>
+    <script src="src/TypeChecker.js"></script>
+    <script src="src/GlrParser.js"></script>
+    <script src="src/Tokenizer.js"></script>
+    <script src="src/RuleSet.js"></script>
+    <script src="src/EarleyParser.js"></script>
+    <script src="src/RuleParser.js"></script>
+    <script src="src/qbasic.js"></script>
+  </head>
+  <body>
+    <div id="main"></div>
+    <div id="debug"></div>
+
+    <script>
+      var ScriptSrc = './assets/'; // directory of charmap.png
+      var cons = new Console();
+      $('#main').append(cons.canvas);
+      var virtualMachine = new VirtualMachine(cons);
+      var dbg = new DebugConsole(document.getElementById("debug"));
+      $.get('nibbles.bas', {dataType: 'html'}, function(code) {
+        var program = new QBasicProgram(code);
+        if(program.errors.length === 0) {
+          virtualMachine.run( program, false );
+        } else {
+          virtualMachine.reset( null );
+          for(var i=0; i<program.errors.length; i++) {
+            cons.print(program.errors[i] + "\n");
+          }
+          cons.enableCursor(true);
+        }
+      })
+    </script>
+  </body>
+</html>
